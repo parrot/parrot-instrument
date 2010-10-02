@@ -34,5 +34,9 @@ PMCS
     config['dynpmc']        = pmcs
     config['dynpmc_cflags'] = "-g"
 
+    $P0 = new ['Hash']
+    $P0['src/runtime/Instrument/Instrument.pbc'] = 'src/runtime/Instrument/Instrument.pir'
+    config['pbc_pir'] = $P0
+
     setup(args :flat, config :flat :named)
 .end

@@ -3,7 +3,8 @@
 
 =head1 NAME
 
-runtime/parrot/library/Instrument/Instrument.pir - Loads all libraries required by Instrument.
+runtime/parrot/library/Instrument/Instrument.pir - Loads all libraries required
+by Instrument.
 
 =head1 SYNOPSIS
 
@@ -14,10 +15,10 @@ runtime/parrot/library/Instrument/Instrument.pir - Loads all libraries required 
 
 .include 'call_bits.pasm'
 .loadlib 'bit_ops'
-.loadlib 'instrument_group'
 
 .sub '__instrument_lib_init' :init :load :anon
     .local pmc lib
+    $P0 = loadlib './dynext/instrument_group'
     load_bytecode 'P6object.pbc'
 
     .return()
