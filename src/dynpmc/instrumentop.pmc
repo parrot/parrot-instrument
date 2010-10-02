@@ -107,9 +107,8 @@ Returns the full name of the current op.
     METHOD name() {
         Parrot_InstrumentOp_attributes * const attr = PARROT_INSTRUMENTOP(SELF);
         UINTVAL op = attr->op_mapping[*(attr->pc)];
-
-        STRING *name = CONST_STRING(INTERP, attr->interp->op_info_table[op].full_name);
-
+        char const * const opn = attr->interp->code->op_info_table[op]->full_name;
+        STRING *name = Parrot_str_new(INTERP, opn, strlen(opn));
         RETURN(STRING *name);
     }
 
@@ -126,9 +125,8 @@ Returns the name of the current op family (short name).
     METHOD family() {
         Parrot_InstrumentOp_attributes * const attr = PARROT_INSTRUMENTOP(SELF);
         UINTVAL op = attr->op_mapping[*(attr->pc)];
-
-        STRING *name = CONST_STRING(INTERP, attr->interp->op_info_table[op].name);
-
+        char const * const opn = attr->interp->code->op_info_table[op]->name;
+        STRING *name = Parrot_str_new(INTERP, opn, strlen(opn));
         RETURN(STRING *name);
     }
 
@@ -146,7 +144,7 @@ For special ops like set_args_pc, add the variable argument count to the total c
     METHOD count() {
         Parrot_InstrumentOp_attributes * const attr = PARROT_INSTRUMENTOP(SELF);
         UINTVAL op = attr->op_mapping[*(attr->pc)];
-        INTVAL count = attr->interp->op_info_table[op].op_count - 1;
+        INTVAL count = attr->interp->code->op_info_table[op]->op_count - 1;
 
         if (op == enum_ops_set_args_pc
          || op == enum_ops_get_results_pc
@@ -185,7 +183,7 @@ Takes into account the special ops with variable arguments.
                     (PARROT_ARG_TYPE_MASK|PARROT_ARG_CONSTANT);
         }
         else {
-            type = attr->interp->op_info_table[op].types[arg_index];
+            type = attr->interp->code->op_info_table[op]->types[arg_index];
         }
 
         RETURN(INTVAL type);
@@ -265,7 +263,7 @@ Takes into account the special ops with variable arguments.
                     (PARROT_ARG_TYPE_MASK|PARROT_ARG_CONSTANT);
         }
         else {
-            type = attr->interp->op_info_table[op].types[arg_index];
+            type = attr->interp->code->op_info_table[op]->types[arg_index];
         }
 
         switch (type) {
@@ -306,12 +304,15 @@ Takes into account the special ops with variable arguments.
             ret = Parrot_pmc_new(INTERP, enum_class_String);
             {
                 const Parrot_Context * const c = CONTEXT_STRUCT(cc);
-                Parrot_io_printf(INTERP, "Arg: %d %d %d, %c\n", arg_index, arg, c->constants[arg].type, c->constants[arg].type);
-                Parrot_io_printf(INTERP, "Op: %s %d %d %d\n", attr->interp->op_info_table[op].full_name, op, (attr->pc)[1], (attr->pc)[2]);
+                Parrot_io_printf(INTERP, "Arg: %d %d %d, %c\n", arg_index, arg,
+                    c->constants[arg].type, c->constants[arg].type);
+                Parrot_io_printf(INTERP, "Op: %s %d %d %d\n",
+                    attr->interp->code->op_info_table[op]->full_name, op,
+                    (attr->pc)[1], (attr->pc)[2]);
             }
             VTABLE_set_string_native(INTERP, ret,
-                                     //(Parrot_pcc_get_constants(attr->interp, cc)[arg]).u.string);
-                                     Parrot_pcc_get_string_constant_func(attr->interp, cc, arg));
+                //(Parrot_pcc_get_constants(attr->interp, cc)[arg]).u.string);
+                Parrot_pcc_get_string_constant_func(attr->interp, cc, arg));
 
             break;
           case PARROT_ARG_S:
