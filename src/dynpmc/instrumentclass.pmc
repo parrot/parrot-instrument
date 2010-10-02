@@ -1752,8 +1752,6 @@ void setup_vtable_common_hashes(PARROT_INTERP) {
     parrot_hash_put(interp, vtable_item_groups, CONST_STRING(interp, "i_floor_divide_float"),
                     CONST_STRING(interp, "math"));
     parrot_hash_put(interp, vtable_item_groups, CONST_STRING(interp, "i_floor_divide_int"),
-                    CONST_STRING(interp, "math"));
-    parrot_hash_put(interp, vtable_item_groups, CONST_STRING(interp, "i_logical_not"),
                     CONST_STRING(interp, "cmp"));
     parrot_hash_put(interp, vtable_item_groups, CONST_STRING(interp, "i_modulus"),
                     CONST_STRING(interp, "math"));
@@ -1807,14 +1805,6 @@ void setup_vtable_common_hashes(PARROT_INTERP) {
                     CONST_STRING(interp, "main"));
     parrot_hash_put(interp, vtable_item_groups, CONST_STRING(interp, "isa_pmc"),
                     CONST_STRING(interp, "main"));
-    parrot_hash_put(interp, vtable_item_groups, CONST_STRING(interp, "logical_and"),
-                    CONST_STRING(interp, "cmp"));
-    parrot_hash_put(interp, vtable_item_groups, CONST_STRING(interp, "logical_not"),
-                    CONST_STRING(interp, "cmp"));
-    parrot_hash_put(interp, vtable_item_groups, CONST_STRING(interp, "logical_or"),
-                    CONST_STRING(interp, "cmp"));
-    parrot_hash_put(interp, vtable_item_groups, CONST_STRING(interp, "logical_xor"),
-                    CONST_STRING(interp, "cmp"));
     parrot_hash_put(interp, vtable_item_groups, CONST_STRING(interp, "mark"),
                     CONST_STRING(interp, "main"));
     parrot_hash_put(interp, vtable_item_groups, CONST_STRING(interp, "modulus"),
@@ -2149,8 +2139,6 @@ void setup_vtable_individual_hashes(PARROT_INTERP, Hash *orig_hash, Hash *instr_
     parrot_hash_put(interp, instr_hash,
         CONST_STRING(interp, "i_floor_divide_int"), &(vt_instr->i_floor_divide_int));
     parrot_hash_put(interp, instr_hash,
-        CONST_STRING(interp, "i_logical_not"), &(vt_instr->i_logical_not));
-    parrot_hash_put(interp, instr_hash,
         CONST_STRING(interp, "i_modulus"), &(vt_instr->i_modulus));
     parrot_hash_put(interp, instr_hash,
         CONST_STRING(interp, "i_modulus_float"), &(vt_instr->i_modulus_float));
@@ -2202,14 +2190,6 @@ void setup_vtable_individual_hashes(PARROT_INTERP, Hash *orig_hash, Hash *instr_
         CONST_STRING(interp, "isa"), &(vt_instr->isa));
     parrot_hash_put(interp, instr_hash,
         CONST_STRING(interp, "isa_pmc"), &(vt_instr->isa_pmc));
-    parrot_hash_put(interp, instr_hash,
-        CONST_STRING(interp, "logical_and"), &(vt_instr->logical_and));
-    parrot_hash_put(interp, instr_hash,
-        CONST_STRING(interp, "logical_not"), &(vt_instr->logical_not));
-    parrot_hash_put(interp, instr_hash,
-        CONST_STRING(interp, "logical_or"), &(vt_instr->logical_or));
-    parrot_hash_put(interp, instr_hash,
-        CONST_STRING(interp, "logical_xor"), &(vt_instr->logical_xor));
     parrot_hash_put(interp, instr_hash,
         CONST_STRING(interp, "mark"), &(vt_instr->mark));
     parrot_hash_put(interp, instr_hash,
@@ -2524,8 +2504,6 @@ void setup_vtable_individual_hashes(PARROT_INTERP, Hash *orig_hash, Hash *instr_
     parrot_hash_put(interp, orig_hash,
         CONST_STRING(interp, "i_floor_divide_int"), vt_orig->i_floor_divide_int);
     parrot_hash_put(interp, orig_hash,
-        CONST_STRING(interp, "i_logical_not"), vt_orig->i_logical_not);
-    parrot_hash_put(interp, orig_hash,
         CONST_STRING(interp, "i_modulus"), vt_orig->i_modulus);
     parrot_hash_put(interp, orig_hash,
         CONST_STRING(interp, "i_modulus_float"), vt_orig->i_modulus_float);
@@ -2577,14 +2555,6 @@ void setup_vtable_individual_hashes(PARROT_INTERP, Hash *orig_hash, Hash *instr_
         CONST_STRING(interp, "isa"), vt_orig->isa);
     parrot_hash_put(interp, orig_hash,
         CONST_STRING(interp, "isa_pmc"), vt_orig->isa_pmc);
-    parrot_hash_put(interp, orig_hash,
-        CONST_STRING(interp, "logical_and"), vt_orig->logical_and);
-    parrot_hash_put(interp, orig_hash,
-        CONST_STRING(interp, "logical_not"), vt_orig->logical_not);
-    parrot_hash_put(interp, orig_hash,
-        CONST_STRING(interp, "logical_or"), vt_orig->logical_or);
-    parrot_hash_put(interp, orig_hash,
-        CONST_STRING(interp, "logical_xor"), vt_orig->logical_xor);
     parrot_hash_put(interp, orig_hash,
         CONST_STRING(interp, "mark"), vt_orig->mark);
     parrot_hash_put(interp, orig_hash,
@@ -4000,18 +3970,6 @@ void stub_i_floor_divide_int(PARROT_INTERP, PMC *pmc, INTVAL value) {
 }
 
 static
-void stub_i_logical_not(PARROT_INTERP, PMC *pmc) {
-    VTABLE_STUB_VARS;
-    VTABLE_STUB_SETUP;
-    params = instrument_pack_params(supervisor, "P", pmc);
-    VTABLE_push_string(supervisor, event_array,
-                       CONST_STRING(supervisor, "vtable::cmp::i_logical_not"));
-    VTABLE_STUB_CALL_PRE;
-    ((_vtable *)orig_vtable)->i_logical_not(interp, pmc);
-    VTABLE_STUB_CALL_POST;
-}
-
-static
 void stub_i_modulus(PARROT_INTERP, PMC *pmc, PMC* value) {
     VTABLE_STUB_VARS;
     VTABLE_STUB_SETUP;
@@ -4358,70 +4316,6 @@ INTVAL stub_isa_pmc(PARROT_INTERP, PMC *pmc, PMC* _class) {
     VTABLE_STUB_CALL_PRE;
     ret = ((_vtable *)orig_vtable)->isa_pmc(interp, pmc, _class);
     ret_pack = instrument_pack_params(supervisor, "I", ret);
-    VTABLE_set_pmc_keyed_str(supervisor, data, CONST_STRING(supervisor, "return"), ret_pack);
-    VTABLE_STUB_CALL_POST;
-    return ret;
-}
-
-static
-PMC* stub_logical_and(PARROT_INTERP, PMC *pmc, PMC* value, PMC* dest) {
-    PMC* ret; PMC *ret_pack;
-    VTABLE_STUB_VARS;
-    VTABLE_STUB_SETUP;
-    params = instrument_pack_params(supervisor, "PPP", pmc, value, dest);
-    VTABLE_push_string(supervisor, event_array,
-                       CONST_STRING(supervisor, "vtable::cmp::logical_and"));
-    VTABLE_STUB_CALL_PRE;
-    ret = ((_vtable *)orig_vtable)->logical_and(interp, pmc, value, dest);
-    ret_pack = instrument_pack_params(supervisor, "P", ret);
-    VTABLE_set_pmc_keyed_str(supervisor, data, CONST_STRING(supervisor, "return"), ret_pack);
-    VTABLE_STUB_CALL_POST;
-    return ret;
-}
-
-static
-PMC* stub_logical_not(PARROT_INTERP, PMC *pmc, PMC* dest) {
-    PMC* ret; PMC *ret_pack;
-    VTABLE_STUB_VARS;
-    VTABLE_STUB_SETUP;
-    params = instrument_pack_params(supervisor, "PP", pmc, dest);
-    VTABLE_push_string(supervisor, event_array,
-                       CONST_STRING(supervisor, "vtable::cmp::logical_not"));
-    VTABLE_STUB_CALL_PRE;
-    ret = ((_vtable *)orig_vtable)->logical_not(interp, pmc, dest);
-    ret_pack = instrument_pack_params(supervisor, "P", ret);
-    VTABLE_set_pmc_keyed_str(supervisor, data, CONST_STRING(supervisor, "return"), ret_pack);
-    VTABLE_STUB_CALL_POST;
-    return ret;
-}
-
-static
-PMC* stub_logical_or(PARROT_INTERP, PMC *pmc, PMC* value, PMC* dest) {
-    PMC* ret; PMC *ret_pack;
-    VTABLE_STUB_VARS;
-    VTABLE_STUB_SETUP;
-    params = instrument_pack_params(supervisor, "PPP", pmc, value, dest);
-    VTABLE_push_string(supervisor, event_array,
-                       CONST_STRING(supervisor, "vtable::cmp::logical_or"));
-    VTABLE_STUB_CALL_PRE;
-    ret = ((_vtable *)orig_vtable)->logical_or(interp, pmc, value, dest);
-    ret_pack = instrument_pack_params(supervisor, "P", ret);
-    VTABLE_set_pmc_keyed_str(supervisor, data, CONST_STRING(supervisor, "return"), ret_pack);
-    VTABLE_STUB_CALL_POST;
-    return ret;
-}
-
-static
-PMC* stub_logical_xor(PARROT_INTERP, PMC *pmc, PMC* value, PMC* dest) {
-    PMC* ret; PMC *ret_pack;
-    VTABLE_STUB_VARS;
-    VTABLE_STUB_SETUP;
-    params = instrument_pack_params(supervisor, "PPP", pmc, value, dest);
-    VTABLE_push_string(supervisor, event_array,
-                       CONST_STRING(supervisor, "vtable::cmp::logical_xor"));
-    VTABLE_STUB_CALL_PRE;
-    ret = ((_vtable *)orig_vtable)->logical_xor(interp, pmc, value, dest);
-    ret_pack = instrument_pack_params(supervisor, "P", ret);
     VTABLE_set_pmc_keyed_str(supervisor, data, CONST_STRING(supervisor, "return"), ret_pack);
     VTABLE_STUB_CALL_POST;
     return ret;
