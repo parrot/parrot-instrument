@@ -3,3 +3,4 @@ src/dynpmc/pmc_*.h
 src/dynpmc/*.o
 src/dynpmc/*dump
 src/dynpmc/instrument_group.h
+src/runtime/Instrument/*.pbc
