@@ -304,8 +304,8 @@ Creates a new InstrumentClass instance if there is none currently associated.
 
         /* Create the Instrument::Event::Object instance. */
         key = Parrot_key_new_cstring(INTERP, "Instrument");
-        key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "Event"));
-        key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "Class"));
+        Parrot_key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "Event"));
+        Parrot_key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "Class"));
 
         obj_type  = Parrot_pmc_get_type(INTERP, key);
         obj_instr = Parrot_pmc_new(INTERP, obj_type);
@@ -348,8 +348,8 @@ If none exists in cache, create a new instance and return it.
 
         /* Create the Instrument::Event::Object instance. */
         key = Parrot_key_new_cstring(INTERP, "Instrument");
-        key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "Event"));
-        key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "Object"));
+        Parrot_key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "Event"));
+        Parrot_key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "Object"));
 
         obj_type  = Parrot_pmc_get_type(INTERP, key);
         obj_instr = Parrot_pmc_new(INTERP, obj_type);
@@ -371,8 +371,8 @@ If none exists in cache, create a new instance and return it.
             /* Create an instance of Instrument::Event::ObjectDestroy so that we can
                be notified when the object is dead. */
             dest_key = Parrot_key_new_cstring(INTERP, "Instrument");
-            key_append(INTERP, dest_key, Parrot_key_new_cstring(INTERP, "Event"));
-            key_append(INTERP, dest_key, Parrot_key_new_cstring(INTERP, "ObjectDestroy"));
+            Parrot_key_append(INTERP, dest_key, Parrot_key_new_cstring(INTERP, "Event"));
+            Parrot_key_append(INTERP, dest_key, Parrot_key_new_cstring(INTERP, "ObjectDestroy"));
 
             dest_type = Parrot_pmc_get_type(INTERP, dest_key);
             dest_obj  = Parrot_pmc_new(INTERP, dest_type);
@@ -403,7 +403,7 @@ to inspect ops being executed.
         INTVAL type;
 
         key = Parrot_key_new_cstring(INTERP, "Instrument");
-        key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "Probe"));
+        Parrot_key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "Probe"));
 
         type = Parrot_pmc_get_type(INTERP, key);
         obj  = Parrot_pmc_new(INTERP, type);
@@ -430,8 +430,8 @@ to inspect any calls to gc functions.
         INTVAL type;
 
         key = Parrot_key_new_cstring(INTERP, "Instrument");
-        key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "Event"));
-        key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "GC"));
+        Parrot_key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "Event"));
+        Parrot_key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "GC"));
 
         type = Parrot_pmc_get_type(INTERP, key);
         obj  = Parrot_pmc_new(INTERP, type);
@@ -543,7 +543,7 @@ invokable, which can then be passed back to raise_event to be recalled.
             }
 
             /* Add common items to data. */
-            Parrot_Context_get_info(INTERP, CURRENT_CONTEXT(attr->supervised), &info);
+            Parrot_sub_context_get_info(INTERP, CURRENT_CONTEXT(attr->supervised), &info);
             VTABLE_set_pmc_keyed_str(INTERP, data, const_event, event_tokens);
             VTABLE_set_string_keyed_str(INTERP, data, const_file, info.file);
             VTABLE_set_string_keyed_str(INTERP, data, const_sub, info.subname);
