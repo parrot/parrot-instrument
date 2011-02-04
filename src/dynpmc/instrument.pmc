@@ -146,7 +146,7 @@ Unknown keys are sent to the supervised interpreter.
     VTABLE PMC *get_pmc_keyed(PMC *key) {
         Parrot_Instrument_attributes * const attr = PARROT_INSTRUMENT(SELF);
         PMC *nextkey, *supervised_pmc;
-        STRING *item = key_string(INTERP, key);
+        STRING *item = Parrot_key_string(INTERP, key);
         STRING *name;
 
         /* probes: return the hash of probes */
@@ -303,9 +303,9 @@ Creates a new InstrumentClass instance if there is none currently associated.
         PMC    *class_instr, *key;
 
         /* Create the Instrument::Event::Object instance. */
-        key = key_new_cstring(INTERP, "Instrument");
-        key_append(INTERP, key, key_new_cstring(INTERP, "Event"));
-        key_append(INTERP, key, key_new_cstring(INTERP, "Class"));
+        key = Parrot_key_new_cstring(INTERP, "Instrument");
+        key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "Event"));
+        key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "Class"));
 
         obj_type  = Parrot_pmc_get_type(INTERP, key);
         obj_instr = Parrot_pmc_new(INTERP, obj_type);
@@ -347,9 +347,9 @@ If none exists in cache, create a new instance and return it.
         hook_str = CONST_STRING(INTERP, "$!hook_obj");
 
         /* Create the Instrument::Event::Object instance. */
-        key = key_new_cstring(INTERP, "Instrument");
-        key_append(INTERP, key, key_new_cstring(INTERP, "Event"));
-        key_append(INTERP, key, key_new_cstring(INTERP, "Object"));
+        key = Parrot_key_new_cstring(INTERP, "Instrument");
+        key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "Event"));
+        key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "Object"));
 
         obj_type  = Parrot_pmc_get_type(INTERP, key);
         obj_instr = Parrot_pmc_new(INTERP, obj_type);
@@ -370,9 +370,9 @@ If none exists in cache, create a new instance and return it.
 
             /* Create an instance of Instrument::Event::ObjectDestroy so that we can
                be notified when the object is dead. */
-            dest_key = key_new_cstring(INTERP, "Instrument");
-            key_append(INTERP, dest_key, key_new_cstring(INTERP, "Event"));
-            key_append(INTERP, dest_key, key_new_cstring(INTERP, "ObjectDestroy"));
+            dest_key = Parrot_key_new_cstring(INTERP, "Instrument");
+            key_append(INTERP, dest_key, Parrot_key_new_cstring(INTERP, "Event"));
+            key_append(INTERP, dest_key, Parrot_key_new_cstring(INTERP, "ObjectDestroy"));
 
             dest_type = Parrot_pmc_get_type(INTERP, dest_key);
             dest_obj  = Parrot_pmc_new(INTERP, dest_type);
@@ -402,8 +402,8 @@ to inspect ops being executed.
         PMC *key, *obj;
         INTVAL type;
 
-        key = key_new_cstring(INTERP, "Instrument");
-        key_append(INTERP, key, key_new_cstring(INTERP, "Probe"));
+        key = Parrot_key_new_cstring(INTERP, "Instrument");
+        key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "Probe"));
 
         type = Parrot_pmc_get_type(INTERP, key);
         obj  = Parrot_pmc_new(INTERP, type);
@@ -429,9 +429,9 @@ to inspect any calls to gc functions.
         PMC *key, *obj;
         INTVAL type;
 
-        key = key_new_cstring(INTERP, "Instrument");
-        key_append(INTERP, key, key_new_cstring(INTERP, "Event"));
-        key_append(INTERP, key, key_new_cstring(INTERP, "GC"));
+        key = Parrot_key_new_cstring(INTERP, "Instrument");
+        key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "Event"));
+        key_append(INTERP, key, Parrot_key_new_cstring(INTERP, "GC"));
 
         type = Parrot_pmc_get_type(INTERP, key);
         obj  = Parrot_pmc_new(INTERP, type);
