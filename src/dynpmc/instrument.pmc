@@ -190,7 +190,6 @@ program in 'file'.
         int argc = 0, status;
         char * default_argv[] = {NULL};
         char ** argv = default_argv;
-        char * file_c;
         Parrot_Instrument_attributes * const attr = PARROT_INSTRUMENT(SELF);
         PMC *probe_iter;
         int counter = 0;
@@ -218,16 +217,11 @@ program in 'file'.
         }
 
         /* Begin Execution */
-        file_c = Parrot_str_to_cstring(attr->supervised, file);
-        status = imcc_run(attr->supervised,
-                    file_c,
-                    argc, (const char **) argv);
+        status = imcc_run_api(attr->supervised, file, argc, (const char **) argv);
         if (status) {
-            imcc_run_pbc(attr->supervised,
-                         attr->supervised->output_file,
+            imcc_run_pbc(attr->supervised, attr->supervised->output_file,
                          argc, (const char **) argv);
         }
-        Parrot_str_free_cstring(file_c);
 
         /* Finalize the instruments */
         probe_iter = VTABLE_get_iter(INTERP, attr->probes);
