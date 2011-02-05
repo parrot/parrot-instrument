@@ -659,7 +659,6 @@ static void stub_i_divide_int(PARROT_INTERP, PMC *pmc, INTVAL value);
 static void stub_i_floor_divide(PARROT_INTERP, PMC *pmc, PMC* value);
 static void stub_i_floor_divide_float(PARROT_INTERP, PMC *pmc, FLOATVAL value);
 static void stub_i_floor_divide_int(PARROT_INTERP, PMC *pmc, INTVAL value);
-static void stub_i_logical_not(PARROT_INTERP, PMC *pmc);
 static void stub_i_modulus(PARROT_INTERP, PMC *pmc, PMC* value);
 static void stub_i_modulus_float(PARROT_INTERP, PMC *pmc, FLOATVAL value);
 static void stub_i_modulus_int(PARROT_INTERP, PMC *pmc, INTVAL value);
@@ -686,10 +685,6 @@ static INTVAL stub_is_equal_string(PARROT_INTERP, PMC *pmc, PMC* value);
 static INTVAL stub_is_same(PARROT_INTERP, PMC *pmc, PMC* value);
 static INTVAL stub_isa(PARROT_INTERP, PMC *pmc, STRING* _class);
 static INTVAL stub_isa_pmc(PARROT_INTERP, PMC *pmc, PMC* _class);
-static PMC* stub_logical_and(PARROT_INTERP, PMC *pmc, PMC* value, PMC* dest);
-static PMC* stub_logical_not(PARROT_INTERP, PMC *pmc, PMC* dest);
-static PMC* stub_logical_or(PARROT_INTERP, PMC *pmc, PMC* value, PMC* dest);
-static PMC* stub_logical_xor(PARROT_INTERP, PMC *pmc, PMC* value, PMC* dest);
 static void stub_mark(PARROT_INTERP, PMC *pmc);
 static PMC* stub_modulus(PARROT_INTERP, PMC *pmc, PMC* value, PMC* dest);
 static PMC* stub_modulus_float(PARROT_INTERP, PMC *pmc, FLOATVAL value, PMC* dest);
@@ -945,8 +940,6 @@ void setup_vtable_common_hashes(PARROT_INTERP) {
     parrot_hash_put(interp, vtable_name_stubs,
         CONST_STRING(interp, "i_floor_divide_int"), stub_i_floor_divide_int);
     parrot_hash_put(interp, vtable_name_stubs,
-        CONST_STRING(interp, "i_logical_not"), stub_i_logical_not);
-    parrot_hash_put(interp, vtable_name_stubs,
         CONST_STRING(interp, "i_modulus"), stub_i_modulus);
     parrot_hash_put(interp, vtable_name_stubs,
         CONST_STRING(interp, "i_modulus_float"), stub_i_modulus_float);
@@ -998,14 +991,6 @@ void setup_vtable_common_hashes(PARROT_INTERP) {
         CONST_STRING(interp, "isa"), stub_isa);
     parrot_hash_put(interp, vtable_name_stubs,
         CONST_STRING(interp, "isa_pmc"), stub_isa_pmc);
-    parrot_hash_put(interp, vtable_name_stubs,
-        CONST_STRING(interp, "logical_and"), stub_logical_and);
-    parrot_hash_put(interp, vtable_name_stubs,
-        CONST_STRING(interp, "logical_not"), stub_logical_not);
-    parrot_hash_put(interp, vtable_name_stubs,
-        CONST_STRING(interp, "logical_or"), stub_logical_or);
-    parrot_hash_put(interp, vtable_name_stubs,
-        CONST_STRING(interp, "logical_xor"), stub_logical_xor);
     parrot_hash_put(interp, vtable_name_stubs,
         CONST_STRING(interp, "mark"), stub_mark);
     parrot_hash_put(interp, vtable_name_stubs,
@@ -1321,7 +1306,6 @@ void setup_vtable_common_hashes(PARROT_INTERP) {
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "i_floor_divide"));
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "i_floor_divide_float"));
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "i_floor_divide_int"));
-    VTABLE_push_string(interp, temp, CONST_STRING(interp, "i_logical_not"));
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "i_modulus"));
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "i_modulus_float"));
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "i_modulus_int"));
@@ -1348,10 +1332,6 @@ void setup_vtable_common_hashes(PARROT_INTERP) {
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "is_same"));
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "isa"));
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "isa_pmc"));
-    VTABLE_push_string(interp, temp, CONST_STRING(interp, "logical_and"));
-    VTABLE_push_string(interp, temp, CONST_STRING(interp, "logical_not"));
-    VTABLE_push_string(interp, temp, CONST_STRING(interp, "logical_or"));
-    VTABLE_push_string(interp, temp, CONST_STRING(interp, "logical_xor"));
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "mark"));
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "modulus"));
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "modulus_float"));
@@ -1493,15 +1473,10 @@ void setup_vtable_common_hashes(PARROT_INTERP) {
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "cmp_num"));
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "cmp_pmc"));
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "cmp_string"));
-    VTABLE_push_string(interp, temp, CONST_STRING(interp, "i_logical_not"));
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "is_equal"));
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "is_equal_num"));
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "is_equal_string"));
     VTABLE_push_string(interp, temp, CONST_STRING(interp, "is_same"));
-    VTABLE_push_string(interp, temp, CONST_STRING(interp, "logical_and"));
-    VTABLE_push_string(interp, temp, CONST_STRING(interp, "logical_not"));
-    VTABLE_push_string(interp, temp, CONST_STRING(interp, "logical_or"));
-    VTABLE_push_string(interp, temp, CONST_STRING(interp, "logical_xor"));
     parrot_hash_put(interp, vtable_group_items,
         CONST_STRING(interp, "cmp"), temp);
 
