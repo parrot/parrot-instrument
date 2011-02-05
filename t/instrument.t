@@ -1,4 +1,4 @@
-#!./parrot
+#!parrot
 # Copyright (C) 2010, Parrot Foundation.
 # $Id: instrument.t 48268 2010-08-03 03:23:30Z khairul $
 

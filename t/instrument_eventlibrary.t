@@ -1,4 +1,4 @@
-#!./parrot
+#!parrot
 # Copyright (C) 2010, Parrot Foundation.
 # $Id: instrument_eventlibrary.t 48347 2010-08-08 16:36:50Z khairul $
 
