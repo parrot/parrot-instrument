@@ -20,10 +20,10 @@ to be done on a child interpreter.
 */
 
 #include "parrot/parrot.h"
-#include "parrot/imcc.h"
 #include "parrot/runcore_api.h"
 #include "parrot/embed.h"
 #include "parrot/opsenum.h"
+#include "parrot/api.h"
 
 #include "instrument_private.h"
 
@@ -192,6 +192,7 @@ program in 'file'.
         char ** argv = default_argv;
         Parrot_Instrument_attributes * const attr = PARROT_INSTRUMENT(SELF);
         PMC *probe_iter;
+        PMC *pbc = PMCNULL;
         int counter = 0;
 
         /* If args is not null, does array and has a size > 0, convert it
@@ -217,10 +218,11 @@ program in 'file'.
         }
 
         /* Begin Execution */
-        status = imcc_run_api(attr->supervised, file, argc, (const char **) argv);
+        status = imcc_run_api(attr->supervised, file, argc, (const char **) argv, &pbc);
         if (status) {
-            imcc_run_pbc(attr->supervised, attr->supervised->output_file,
-                         argc, (const char **) argv);
+            PMC * const args = Parrot_pmc_box_c_string_array(interp, argc, argv);
+            PackFile * const pf = (PackFile*) VTABLE_get_pointer(interp, pbc);
+            Parrot_pf_execute_bytecode_program(interp, pf, args);
         }
 
         /* Finalize the instruments */
