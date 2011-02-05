@@ -20,7 +20,7 @@ Tests the low level interface provided by instrument.pmc.
     .include 'test_more.pir'
 
     # Load the Instrument library.
-    load_bytecode 'Instrument/InstrumentLib.pbc'
+    load_bytecode './src/runtime/Instrument/Instrument.pbc'
 
     plan(18)
     test_loadlib()
