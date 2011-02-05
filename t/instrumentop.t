@@ -23,7 +23,7 @@ Tests the op information interface provided by the InstrumentOp.pmc.
     .include 'test_more.pir'
 
     # Load the Instrument library.
-    load_bytecode 'Instrument/InstrumentLib.pbc'
+    load_bytecode './src/runtime/Instrument/Instrument.pbc'
 
     plan(11)
 
