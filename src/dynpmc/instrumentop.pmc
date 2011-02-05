@@ -378,7 +378,7 @@ Returns the following information in a Hash PMC gathered from the current contex
         Parrot_Context_info info;
         PMC *ctx_hash;
 
-        INTVAL ret = Parrot_Context_get_info(attr->interp, CURRENT_CONTEXT(attr->interp), &info);
+        INTVAL ret = Parrot_sub_context_get_info(attr->interp, CURRENT_CONTEXT(attr->interp), &info);
         ctx_hash   = Parrot_pmc_new(INTERP, enum_class_Hash);
 
         VTABLE_set_string_keyed_str(INTERP, ctx_hash,
