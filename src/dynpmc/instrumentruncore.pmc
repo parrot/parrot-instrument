@@ -686,7 +686,7 @@ void runcore_vtable_fixup(PARROT_INTERP, PMC *runcore) {
 
             name                   = interp->vtables[i]->whoami;
             Parrot_pmc_register_new_type(supervised, name);
-            supervised->vtables[i] = Parrot_clone_vtable(supervised, interp->vtables[i]);
+            supervised->vtables[i] = Parrot_vtbl_clone_vtable(supervised, interp->vtables[i]);
         }
         else {
             STRING *dummy;
