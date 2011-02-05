@@ -193,6 +193,7 @@ program in 'file'.
         Parrot_Instrument_attributes * const attr = PARROT_INSTRUMENT(SELF);
         PMC *probe_iter;
         PMC *pbc = PMCNULL;
+        PMC *interp_pmc = PMCNULL;
         int counter = 0;
 
         /* If args is not null, does array and has a size > 0, convert it
@@ -218,7 +219,9 @@ program in 'file'.
         }
 
         /* Begin Execution */
-        status = imcc_run_api(attr->supervised, file, argc, (const char **) argv, &pbc);
+        interp_pmc = VTABLE_get_pmc_keyed_int(attr->supervised,
+                attr->supervised->iglobals, (Parrot_Int)IGLOBALS_INTERPRETER);
+        status = imcc_run_api(interp_pmc, file, argc, (const char **) argv, &pbc);
         if (status) {
             PMC * const args = Parrot_pmc_box_c_string_array(interp, argc, argv);
             PackFile * const pf = (PackFile*) VTABLE_get_pointer(interp, pbc);
