@@ -150,7 +150,7 @@ For special ops like set_args_pc, add the variable argument count to the total c
          || op == enum_ops_get_results_pc
          || op == enum_ops_get_params_pc
          || op == enum_ops_set_returns_pc) {
-            PMC * const sig = attr->interp->code->const_table->constants[(attr->pc)[1]].u.key;
+            PMC * const sig = attr->interp->code->const_table->pmc.constants[(attr->pc)[1]];
             count += VTABLE_elements(attr->interp, sig);
         }
 
@@ -178,7 +178,7 @@ Takes into account the special ops with variable arguments.
            || op == enum_ops_get_params_pc
            || op == enum_ops_set_returns_pc)
          && arg_index >= 1) {
-            PMC * const sig = attr->interp->code->const_table->constants[(attr->pc)[1]].u.key;
+            PMC * const sig = attr->interp->code->const_table->pmc.constants[(attr->pc)[1]];
             type = VTABLE_get_integer_keyed_int(attr->interp, sig, arg_index - 1) &
                     (PARROT_ARG_TYPE_MASK|PARROT_ARG_CONSTANT);
         }
@@ -258,7 +258,7 @@ Takes into account the special ops with variable arguments.
            || op == enum_ops_get_params_pc
            || op == enum_ops_set_returns_pc)
          && arg_index >= 1) {
-            PMC * const sig = attr->interp->code->const_table->constants[(attr->pc)[1]].u.key;
+            PMC * const sig = attr->interp->code->const_table->pmc.constants[(attr->pc)[1]];
             type = VTABLE_get_integer_keyed_int(attr->interp, sig, arg_index - 1) &
                     (PARROT_ARG_TYPE_MASK|PARROT_ARG_CONSTANT);
         }
@@ -304,8 +304,9 @@ Takes into account the special ops with variable arguments.
             ret = Parrot_pmc_new(INTERP, enum_class_String);
             {
                 const Parrot_Context * const c = CONTEXT_STRUCT(cc);
-                Parrot_io_printf(INTERP, "Arg: %d %d %d, %c\n", arg_index, arg,
-                    c->constants[arg].type, c->constants[arg].type);
+                /* TODO: How to update this? */
+                //Parrot_io_printf(INTERP, "Arg: %d %d %d, %c\n", arg_index, arg,
+                //    c->constants[arg].type, c->constants[arg].type);
                 Parrot_io_printf(INTERP, "Op: %s %d %d %d\n",
                     attr->interp->code->op_info_table[op]->full_name, op,
                     (attr->pc)[1], (attr->pc)[2]);
@@ -331,7 +332,7 @@ Takes into account the special ops with variable arguments.
             ret = Parrot_pmc_new(INTERP, enum_class_String);
             {
                 PMC *key;
-                key = (Parrot_pcc_get_constants(attr->interp, cc)[arg]).u.key;
+                key = Parrot_pcc_get_pmc_constants(attr->interp, cc)[arg];
 
                 VTABLE_set_string_native(INTERP, ret, VTABLE_get_string(attr->interp, key));
             }
