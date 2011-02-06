@@ -14,18 +14,11 @@ by Instrument.
 =cut
 
 .include 'call_bits.pasm'
+.loadlib './dynext/instrument_group.so'
 .loadlib 'bit_ops'
 
 .sub '__instrument_lib_init' :init :load :anon
-    .local pmc lib
-    $P0 = loadlib './dynext/instrument_group.so'
-    $I0 = defined $P0
-    if $I0 goto have_instrument_group
-    say "Could not load instrument_group"
-    exit 0
-  have_instrument_group:
     load_bytecode 'P6object.pbc'
-
     .return()
 .end
 
