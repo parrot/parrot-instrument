@@ -24,7 +24,7 @@ Tests the Instrument::Probe helper class.
     .include 'test_more.pir'
 
     # Load the Instrument library.
-    load_bytecode './src/runtime/Instrument/Instrument.pbc'
+    load_bytecode './src/runtime/Instrument/InstrumentLib.pbc'
 
     plan(17)
 

@@ -25,7 +25,7 @@ testing method-related methods of InstrumentClass.
     .include 'test_more.pir'
 
     # Load the Instrument library.
-    load_bytecode './src/runtime/Instrument/Instrument.pbc'
+    load_bytecode './src/runtime/Instrument/InstrumentLib.pbc'
 
     plan(39)
 
