@@ -35,8 +35,30 @@ PMCS
     config['dynpmc_cflags'] = "-g"
 
     $P0 = new ['Hash']
-    $P0['src/runtime/Instrument/Instrument.pbc'] = 'src/runtime/Instrument/Instrument.pir'
+    $P0['src/runtime/Instrument/Base.pir']         = 'src/runtime/Instrument/Base.nqp'
+    $P0['src/runtime/Instrument/EventLibrary.pir'] = 'src/runtime/Instrument/EventLibrary.nqp'
+    $P0['src/runtime/Instrument/Event.pir']        = 'src/runtime/Instrument/Event.nqp'
+    $P0['src/runtime/Instrument/Probe.pir']        = 'src/runtime/Instrument/Probe.nqp'
+    config['pir_nqprx'] = $P0
+
+    $P0 = new ['Hash']
+    $P0['src/runtime/Instrument/Instrument.pbc']   = 'src/runtime/Instrument/Instrument.pir'
+    $P0['src/runtime/Instrument/Base.pbc']         = 'src/runtime/Instrument/Base.pir'
+    $P0['src/runtime/Instrument/EventLibrary.pbc'] = 'src/runtime/Instrument/EventLibrary.pir'
+    $P0['src/runtime/Instrument/Event.pbc']        = 'src/runtime/Instrument/Event.pir'
+    $P0['src/runtime/Instrument/Probe.pbc']        = 'src/runtime/Instrument/Probe.pir'
     config['pbc_pir'] = $P0
+
+    $P0 = new ['Hash']
+    $P1 = new ['ResizablePMCArray']
+    push $P1, 'src/runtime/Instrument/Instrument.pbc'
+    push $P1, 'src/runtime/Instrument/Base.pbc'
+    push $P1, 'src/runtime/Instrument/EventLibrary.pbc'
+    push $P1, 'src/runtime/Instrument/Event.pbc'
+    push $P1, 'src/runtime/Instrument/Probe.pbc'
+    $P0['src/runtime/Instrument/InstrumentLib.pbc'] = $P1
+    config['pbc_pbc'] = $P0
+
 
     setup(args :flat, config :flat :named)
 .end
