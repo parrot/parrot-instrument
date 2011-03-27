@@ -63,7 +63,6 @@ PROG
 .sub test_one_op
     # Test a single opcode.
     .local pmc instr, probe, probe_class, args
-
     instr = new ['Instrument']
 
     # Set up the program args.

@@ -311,7 +311,7 @@ runcore_probes_setup(PARROT_INTERP, PMC *runcore) {
     GETATTR_InstrumentRuncore_instrument(interp, runcore, instrument);
     GETATTR_Instrument_supervised(interp, instrument, supervised);
 
-    count    = supervised->code->op_count;
+    count    = Parrot_hash_size(interp, interp->op_hash);
     hooks    = mem_gc_allocate_n_zeroed_typed(interp, count, probe_list_t *);
     catchall = probe_list_create_list(interp);
 

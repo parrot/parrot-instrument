@@ -89,7 +89,7 @@ everytime a dynlib is loaded.
         }
         else {
             # $op is singular.
-            my %oplib := pir::new__PS('OpLib');
+            my %oplib := pir::new__PSP('OpLib', "core_ops");
 
             if pir::does__IPS($op, 'integer') {
                 # $op = op number.

@@ -89,7 +89,8 @@ PROG
 
 .sub test_core_op
     .local pmc probe, probe_class, oplib
-    oplib = new ['OpLib']
+    $P0 = box "core_ops"
+    oplib = new ['OpLib'], $P0
 
     probe_class = get_hll_global ['Instrument'], 'Probe'
     probe       = probe_class.'new'()
