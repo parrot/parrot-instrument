@@ -322,6 +322,7 @@ Creates a new InstrumentClass instance if there is none currently associated.
             () = PCCINVOKE(INTERP, class_instr, "attach_to_class", STRING *classname);
 
             parrot_hash_put(INTERP, attr->instrument_classes, classname, class_instr);
+            PARROT_GC_WRITE_BARRIER(INTERP, SELF);
         }
         VTABLE_set_attr_str(INTERP, obj_instr, CONST_STRING(INTERP, "$!hook_obj"), class_instr);
 
@@ -368,6 +369,7 @@ If none exists in cache, create a new instance and return it.
             () = PCCINVOKE(INTERP, class_instr, "attach_to_object", PMC *object);
 
             parrot_hash_put(INTERP, attr->instrument_objects, object, class_instr);
+            PARROT_GC_WRITE_BARRIER(INTERP, SELF);
 
             /* Create an instance of Instrument::Event::ObjectDestroy so that we can
                be notified when the object is dead. */
@@ -465,9 +467,11 @@ Whenever the event is raised, the handler is called as well.
             ptr  = Parrot_pmc_new(INTERP, enum_class_Pointer);
             VTABLE_set_pointer(INTERP, ptr, list);
             parrot_hash_put(INTERP, attr->event_handlers, event, ptr);
+            PARROT_GC_WRITE_BARRIER(INTERP, SELF);
         }
 
         probe_list_push(INTERP, list, handler);
+        PARROT_GC_WRITE_BARRIER(INTERP, SELF);
     }
 
 /*
@@ -541,6 +545,7 @@ invokable, which can then be passed back to raise_event to be recalled.
                 ptr    = (PMC *) parrot_hash_get(INTERP, attr->event_handlers, key);
                 to_add = (!PMC_IS_NULL(ptr)) ? (probe_list_t *)VTABLE_get_pointer(INTERP, ptr):NULL;
                 probe_list_append(INTERP, cur_list, to_add);
+                PARROT_GC_WRITE_BARRIER(INTERP, SELF);
             }
 
             /* Add common items to data. */
@@ -557,7 +562,8 @@ invokable, which can then be passed back to raise_event to be recalled.
 
         /* Execute the handlers. */
         ret_list = fire_callbacks(INTERP, cur_list, data, SELF);
-        ret      = Parrot_pmc_new(INTERP, enum_class_Pointer);
+        PARROT_GC_WRITE_BARRIER(INTERP, SELF);
+        ret = Parrot_pmc_new(INTERP, enum_class_Pointer);
         VTABLE_set_pointer(INTERP, ret, ret_list);
 
         RETURN(PMC *ret);

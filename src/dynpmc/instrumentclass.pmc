@@ -144,6 +144,7 @@ The vtable pointer will be replaced the first time a hook is inserted.
     METHOD attach_to_class(STRING *classname) {
         Parrot_InstrumentClass_attributes * const attr = PARROT_INSTRUMENTCLASS(SELF);
         attr->class_name  = classname;
+        PARROT_GC_WRITE_BARRIER(INTERP, SELF);
     }
 
 /*
@@ -185,6 +186,7 @@ For internal use only.
 
         /* Register the instrumented vtable to SELF. */
         parrot_hash_put(INTERP, attr->registry, attr->instrumented_struct, SELF);
+        PARROT_GC_WRITE_BARRIER(INTERP, SELF);
 
         /* Build the vtable hashes, passing a sample vtable to build the offsets. */
         setup_vtable_individual_hashes(INTERP, attr->name_original, attr->name_offset,
@@ -260,12 +262,12 @@ If name denotes a group, inserts stubs for all functions in that group.
                     STRING *group;
                     INTVAL type;
 
-                    type     = Parrot_pmc_get_type_str(INTERP, CONST_STRING(INTERP, "InstrumentInvokable"));
-                    invokable= Parrot_pmc_new_init(INTERP, type, attr->instrument);
+                    type = Parrot_pmc_get_type_str(INTERP, CONST_STRING(INTERP, "InstrumentInvokable"));
+                    invokable = Parrot_pmc_new_init(INTERP, type, attr->instrument);
 
                     (STRING *group) = PCCINVOKE(INTERP, SELF, "get_hook_group", STRING *item);
 
-                    event    = VTABLE_clone(INTERP, attr->event_prefix);
+                    event = VTABLE_clone(INTERP, attr->event_prefix);
                     VTABLE_push_string(INTERP, event, CONST_STRING(INTERP, "vtable"));
                     VTABLE_push_string(INTERP, event, group);
                     VTABLE_push_string(INTERP, event, item);
@@ -273,6 +275,7 @@ If name denotes a group, inserts stubs for all functions in that group.
                     () = PCCINVOKE(INTERP, invokable, "set_event", PMC *event);
 
                     VTABLE_set_pointer(INTERP, invokable, override);
+                    PARROT_GC_WRITE_BARRIER(INTERP, invokable);
 
                     VTABLE_set_pmc_keyed_str(supervised, overrides, item, invokable);
                 }
@@ -428,9 +431,9 @@ is called.
 
         GETATTR_Instrument_supervised(INTERP, attr->instrument, supervised);
 
-        _class  = Parrot_oo_get_class_str(supervised, attr->class_name);
+        _class = Parrot_oo_get_class_str(supervised, attr->class_name);
         GETATTR_Class_methods(supervised, _class, methods);
-        method_sub     = VTABLE_get_pmc_keyed_str(supervised, methods, method);
+        method_sub = VTABLE_get_pmc_keyed_str(supervised, methods, method);
 
         /* Ensure that method exists. */
         if (PMC_IS_NULL(method_sub)) {
@@ -446,16 +449,17 @@ is called.
             PMC *invokable, *event;
             INTVAL type;
 
-            type     = Parrot_pmc_get_type_str(INTERP, CONST_STRING(INTERP, "InstrumentInvokable"));
-            invokable= Parrot_pmc_new_init(INTERP, type, attr->instrument);
+            type = Parrot_pmc_get_type_str(INTERP, CONST_STRING(INTERP, "InstrumentInvokable"));
+            invokable = Parrot_pmc_new_init(INTERP, type, attr->instrument);
 
-            event    = VTABLE_clone(INTERP, attr->event_prefix);
+            event = VTABLE_clone(INTERP, attr->event_prefix);
             VTABLE_push_string(INTERP, event, CONST_STRING(INTERP, "method"));
             VTABLE_push_string(INTERP, event, method);
 
             () = PCCINVOKE(INTERP, invokable, "set_event", PMC *event);
 
             VTABLE_set_pointer(INTERP, invokable, method_sub);
+            PARROT_GC_WRITE_BARRIER(INTERP, invokable);
 
             VTABLE_set_pmc_keyed_str(supervised, methods, method, invokable);
         }
@@ -489,9 +493,9 @@ Removes the instrumentation of the given method.
 
         GETATTR_Instrument_supervised(INTERP, attr->instrument, supervised);
 
-        _class  = Parrot_oo_get_class_str(supervised, attr->class_name);
+        _class = Parrot_oo_get_class_str(supervised, attr->class_name);
         GETATTR_Class_methods(supervised, _class, methods);
-        method_sub     = VTABLE_get_pmc_keyed_str(supervised, methods, method);
+        method_sub = VTABLE_get_pmc_keyed_str(supervised, methods, method);
 
         /* Ensure that method exists. */
         if (PMC_IS_NULL(method_sub)) {

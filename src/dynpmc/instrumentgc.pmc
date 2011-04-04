@@ -315,6 +315,8 @@ void setup_gc_common_hashes(PARROT_INTERP) {
         stub_unblock_sweep);
     /* END gc mapping name stubs */
 
+    PARROT_GC_WRITE_BARRIER(interp, temp);
+
     /* BEGIN gc mapping group items */
     temp = Parrot_pmc_new(interp, enum_class_ResizableStringArray);
     VTABLE_push_string(interp, temp,
@@ -332,6 +334,8 @@ void setup_gc_common_hashes(PARROT_INTERP) {
     parrot_hash_put(interp, gc_group_items,
                     CONST_STRING(interp, "free"),
                     temp);
+
+    PARROT_GC_WRITE_BARRIER(interp, temp);
 
     temp = Parrot_pmc_new(interp, enum_class_ResizableStringArray);
     VTABLE_push_string(interp, temp,
@@ -360,6 +364,8 @@ void setup_gc_common_hashes(PARROT_INTERP) {
                     CONST_STRING(interp, "administration"),
                     temp);
 
+    PARROT_GC_WRITE_BARRIER(interp, temp);
+
     temp = Parrot_pmc_new(interp, enum_class_ResizableStringArray);
     VTABLE_push_string(interp, temp,
                        CONST_STRING(interp, "allocate_pmc_header"));
@@ -382,6 +388,8 @@ void setup_gc_common_hashes(PARROT_INTERP) {
     parrot_hash_put(interp, gc_group_items,
                     CONST_STRING(interp, "allocate"),
                     temp);
+
+    PARROT_GC_WRITE_BARRIER(interp, temp);
 
     temp = Parrot_pmc_new(interp, enum_class_ResizableStringArray);
     VTABLE_push_string(interp, temp,
@@ -448,6 +456,8 @@ void setup_gc_common_hashes(PARROT_INTERP) {
                     CONST_STRING(interp, "all"),
                     temp);
 
+    PARROT_GC_WRITE_BARRIER(interp, temp);
+
     temp = Parrot_pmc_new(interp, enum_class_ResizableStringArray);
     VTABLE_push_string(interp, temp,
                        CONST_STRING(interp, "reallocate_string_storage"));
@@ -461,6 +471,9 @@ void setup_gc_common_hashes(PARROT_INTERP) {
                     CONST_STRING(interp, "reallocate"),
                     temp);
     /* END gc mapping group items */
+
+    // TODO: Have to add write barriers to the code generator.
+    PARROT_GC_WRITE_BARRIER(interp, temp);
 
     /* BEGIN gc mapping item groups */
     parrot_hash_put(interp, gc_item_groups,

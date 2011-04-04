@@ -73,6 +73,7 @@ Prepares the object for instrumentation.
         object->vtable = (_vtable *) attr->instrumented_struct;
 
         parrot_hash_put(INTERP, attr->registry, attr->instrumented_struct, SELF);
+        PARROT_GC_WRITE_BARRIER(INTERP, SELF);
 
         setup_vtable_individual_hashes(INTERP, attr->name_original, attr->name_offset,
                                        (_vtable *) attr->original_struct,
@@ -184,16 +185,17 @@ is called.
             PMC *invokable, *event;
             INTVAL type;
 
-            type     = Parrot_pmc_get_type_str(INTERP, CONST_STRING(INTERP, "InstrumentInvokable"));
-            invokable= Parrot_pmc_new_init(INTERP, type, attr->instrument);
+            type = Parrot_pmc_get_type_str(INTERP, CONST_STRING(INTERP, "InstrumentInvokable"));
+            invokable = Parrot_pmc_new_init(INTERP, type, attr->instrument);
 
-            event    = VTABLE_clone(INTERP, attr->event_prefix);
+            event = VTABLE_clone(INTERP, attr->event_prefix);
             VTABLE_push_string(INTERP, event, CONST_STRING(INTERP, "method"));
             VTABLE_push_string(INTERP, event, method);
 
             () = PCCINVOKE(INTERP, invokable, "set_event", PMC *event);
 
             VTABLE_set_pointer(INTERP, invokable, method_sub);
+            PARROT_GC_WRITE_BARRIER(INTERP, invokable);
 
             VTABLE_set_pmc_keyed_str(supervised, methods, method, invokable);
         }

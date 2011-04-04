@@ -181,6 +181,7 @@ Insert a hook for the given op number.
         }
 
         probe_list_push(INTERP, attr->op_hooks[op_num], probe);
+        PARROT_GC_WRITE_BARRIER(INTERP, SELF);
     }
 
 /*
@@ -244,6 +245,7 @@ Register a catchall op callback
     METHOD insert_op_catchall(PMC *probe) {
         Parrot_InstrumentRuncore_attributes * const attr = PARROT_INSTRUMENTRUNCORE(SELF);
         probe_list_push(INTERP, attr->op_catchall, probe);
+        PARROT_GC_WRITE_BARRIER(INTERP, SELF);
     }
 
 /*
@@ -318,6 +320,7 @@ runcore_probes_setup(PARROT_INTERP, PMC *runcore) {
     SETATTR_InstrumentRuncore_op_hooks(interp, runcore, hooks);
     SETATTR_InstrumentRuncore_op_catchall(interp, runcore, catchall);
     SETATTR_InstrumentRuncore_op_hooks_size(interp, runcore, count);
+    PARROT_GC_WRITE_BARRIER(interp, runcore);
 }
 
 /*
@@ -353,6 +356,7 @@ runcore_probes_refresh_tables(PARROT_INTERP, PMC *runcore) {
         hooks = mem_gc_realloc_n_typed_zeroed(interp, hooks, new_size, old_size, probe_list_t *);
         SETATTR_InstrumentRuncore_op_hooks(interp, runcore, hooks);
         SETATTR_InstrumentRuncore_op_hooks_size(interp, runcore, new_size);
+        PARROT_GC_WRITE_BARRIER(interp, runcore);
     }
 }
 

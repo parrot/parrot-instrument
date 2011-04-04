@@ -104,6 +104,7 @@ Sets the invokable to invoke when the vtable invoke is called.
     VTABLE void set_pointer(void *invokable) {
         Parrot_InstrumentInvokable_attributes * const attr = PARROT_INSTRUMENTINVOKABLE(SELF);
         attr->invokable = (PMC *) invokable;
+        PARROT_GC_WRITE_BARRIER(INTERP, SELF);
     }
 
 /*
@@ -249,6 +250,7 @@ this instance is invoked.
     METHOD set_event(PMC *event) {
         Parrot_InstrumentInvokable_attributes * const attr = PARROT_INSTRUMENTINVOKABLE(SELF);
         attr->event = Parrot_str_join(INTERP, CONST_STRING(INTERP, "::"), event);
+        PARROT_GC_WRITE_BARRIER(INTERP, SELF);
     }
 }
 
