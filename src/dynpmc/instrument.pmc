@@ -197,6 +197,7 @@ program in 'file'.
         PMC *probe_iter;
         PMC *pbc = PMCNULL;
         PMC *interp_pmc = PMCNULL;
+        PMC * const imcc_pmc = Parrot_get_compiler(INTERP, Parrot_str_new(INTERP, "PIR", 0));
         int counter = 0;
 
         /* If args is not null, does array and has a size > 0, convert it
@@ -224,8 +225,8 @@ program in 'file'.
         /* Begin Execution */
         interp_pmc = VTABLE_get_pmc_keyed_int(attr->supervised,
                 attr->supervised->iglobals, (Parrot_Int)IGLOBALS_INTERPRETER);
-        status = imcc_run_api(interp_pmc, file, argc, (const char **) argv, &pbc);
-        if (status) {
+        pbc = imcc_compile_file(VTABLE_get_pointer(INTERP, imcc_pmc), file);
+        if (!PMC_IS_NULL(pbc)) {
             PMC * const args = Parrot_pmc_box_c_string_array(interp, argc, (const char **)argv);
             PackFile * const pf = (PackFile*) VTABLE_get_pointer(interp, pbc);
             Parrot_pf_execute_bytecode_program(interp, pf, args);
