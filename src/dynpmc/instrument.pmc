@@ -77,7 +77,8 @@ Initializes the pmc and creates a child interpreter.
         attr->event_handlers     = parrot_new_hash(INTERP);
         attr->instrument_classes = parrot_new_hash(INTERP);
         attr->instrument_rc      = Parrot_pmc_new_init(INTERP, rc_class_type, SELF);
-        attr->instrument_gc      = Parrot_pmc_new_init(INTERP, gc_class_type, SELF);
+        //attr->instrument_gc      = Parrot_pmc_new_init(INTERP, gc_class_type, SELF);
+        attr->instrument_gc = PMCNULL;
         attr->instrument_objects = parrot_new_pointer_hash(INTERP);
 
         /* Initialize the scheduler for the child interpreter */
@@ -121,7 +122,7 @@ Marks internal data structures as live to the gc.
 
         /* Mark attributes as alive */
         Parrot_gc_mark_PMC_alive_fun(INTERP, attr->probes);
-        Parrot_gc_mark_PMC_alive_fun(INTERP, attr->instrument_gc);
+        //Parrot_gc_mark_PMC_alive_fun(INTERP, attr->instrument_gc);
         Parrot_gc_mark_PMC_alive_fun(INTERP, attr->instrument_rc);
         parrot_mark_hash(INTERP, attr->event_handlers);
         parrot_mark_hash(INTERP, attr->instrument_classes);
@@ -428,6 +429,7 @@ to inspect any calls to gc functions.
 */
 
     METHOD instrument_gc() {
+        /*
         Parrot_Instrument_attributes * const attr = PARROT_INSTRUMENT(SELF);
         PMC *key, *obj;
         INTVAL type;
@@ -442,7 +444,9 @@ to inspect any calls to gc functions.
 
         VTABLE_set_attr_str(INTERP, obj, CONST_STRING(INTERP, "$!instr_obj"), SELF);
         VTABLE_set_attr_str(INTERP, obj, CONST_STRING(INTERP, "$!hook_obj"), attr->instrument_gc);
+        */
 
+        PMC * obj = PMCNULL;
         RETURN(PMC *obj);
     }
 
