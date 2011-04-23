@@ -72,7 +72,7 @@ Initializes the pmc and creates a child interpreter.
         /* Initialise the attributes. */
         attr->supervised         = Parrot_new(INTERP);
         attr->supervised->code   = INTERP->code;
-        attr->supervised->initial_pf = INTERP->initial_pf;
+        attr->supervised->current_pf = INTERP->current_pf;
         attr->probes             = Parrot_pmc_new(INTERP, enum_class_Hash);
         attr->event_handlers     = parrot_new_hash(INTERP);
         attr->instrument_classes = parrot_new_hash(INTERP);
