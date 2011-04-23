@@ -315,8 +315,6 @@ void setup_gc_common_hashes(PARROT_INTERP) {
         stub_unblock_sweep);
     /* END gc mapping name stubs */
 
-    PARROT_GC_WRITE_BARRIER(interp, temp);
-
     /* BEGIN gc mapping group items */
     temp = Parrot_pmc_new(interp, enum_class_ResizableStringArray);
     VTABLE_push_string(interp, temp,
