@@ -225,11 +225,11 @@ program in 'file'.
         /* Begin Execution */
         interp_pmc = VTABLE_get_pmc_keyed_int(attr->supervised,
                 attr->supervised->iglobals, (Parrot_Int)IGLOBALS_INTERPRETER);
-        pbc = imcc_compile_file(VTABLE_get_pointer(INTERP, imcc_pmc), file);
+        (PMC *pbc) = PCCINVOKE(INTERP, imcc_pmc, "compile_file", STRING *file);
+
         if (!PMC_IS_NULL(pbc)) {
             PMC * const args = Parrot_pmc_box_c_string_array(interp, argc, (const char **)argv);
-            PackFile * const pf = (PackFile*) VTABLE_get_pointer(interp, pbc);
-            Parrot_pf_execute_bytecode_program(interp, pf, args);
+            Parrot_pf_execute_bytecode_program(interp, pbc, args);
         }
 
         /* Finalize the instruments */
@@ -441,7 +441,7 @@ to inspect any calls to gc functions.
 
         type = Parrot_pmc_get_type(INTERP, key);
         obj  = Parrot_pmc_new(INTERP, type);
-        (PMC *obj) = PCCINVOKE(INTERP, obj, "new");
+        (PMC *obj) = DO_NOT_PCCINVOKE(INTERP, obj, "new");
 
         VTABLE_set_attr_str(INTERP, obj, CONST_STRING(INTERP, "$!instr_obj"), SELF);
         VTABLE_set_attr_str(INTERP, obj, CONST_STRING(INTERP, "$!hook_obj"), attr->instrument_gc);
