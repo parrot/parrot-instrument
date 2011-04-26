@@ -85,6 +85,16 @@ Initializes the pmc and creates a child interpreter.
         attr->supervised->scheduler = Parrot_pmc_new(interp, enum_class_Scheduler);
         attr->supervised->scheduler = VTABLE_share_ro(interp, attr->supervised->scheduler);
 
+        /* Setup IMCC for the child interpreter */
+        {
+            PMC * const pir  = Parrot_pmc_new_init_int(attr->supervised, enum_class_IMCCompiler, 0);
+            PMC * const pasm = Parrot_pmc_new_init_int(attr->supervised, enum_class_IMCCompiler, 1);
+            STRING * const pir_s = VTABLE_get_string(attr->supervised, pir);
+            STRING * const pasm_s = VTABLE_get_string(attr->supervised, pasm);
+            Parrot_set_compiler(attr->supervised, pir_s, pir);
+            Parrot_set_compiler(attr->supervised, pasm_s, pasm);
+        }
+
         /* Set self to destroy manually */
         PObj_custom_mark_destroy_SETALL(SELF);
     }
@@ -197,7 +207,8 @@ program in 'file'.
         PMC *probe_iter;
         PMC *pbc = PMCNULL;
         PMC *interp_pmc = PMCNULL;
-        PMC * const imcc_pmc = Parrot_get_compiler(INTERP, Parrot_str_new(INTERP, "PIR", 0));
+        PMC * const imcc_pmc = Parrot_get_compiler(attr->supervised,
+                Parrot_str_new(attr->supervised, "PIR", 0));
         int counter = 0;
 
         /* If args is not null, does array and has a size > 0, convert it
@@ -225,11 +236,13 @@ program in 'file'.
         /* Begin Execution */
         interp_pmc = VTABLE_get_pmc_keyed_int(attr->supervised,
                 attr->supervised->iglobals, (Parrot_Int)IGLOBALS_INTERPRETER);
-        (PMC *pbc) = PCCINVOKE(INTERP, imcc_pmc, "compile_file", STRING *file);
+        (PMC *pbc) = PCCINVOKE(attr->supervised, imcc_pmc, "compile_file", STRING *file);
 
         if (!PMC_IS_NULL(pbc)) {
-            PMC * const args = Parrot_pmc_box_c_string_array(interp, argc, (const char **)argv);
-            Parrot_pf_execute_bytecode_program(interp, pbc, args);
+            UINTVAL regs_used[4] = {3, 3, 3, 3};
+            PMC * const args = Parrot_pmc_box_c_string_array(attr->supervised,
+                    argc, (const char **)argv);
+            Parrot_pf_execute_bytecode_program(attr->supervised, pbc, args);
         }
 
         /* Finalize the instruments */
